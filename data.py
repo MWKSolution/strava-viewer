@@ -29,25 +29,28 @@ def check_athlete(_token):
 
 def get_activities(_token):
     act_list = []
-
-    header = {'Authorization': 'Bearer ' + _token}
-    param = {'per_page': 200, 'page': 1}
-    activities = requests.get(URL_STRAVA + '/activities', headers=header, params=param).json()
-
-    for act in activities:
-        act_id = act['id']
-        act_distance = act['distance'] / 1000  # in km
-        act_time = act['elapsed_time'] / 3600  # in h with decimals after '.'  (not getting mins and secs for now)
-        act_type = act['type']
-        act_gain = act['total_elevation_gain']  # in m
-        act_date = act['start_date']
-        dt_obj = datetime.strptime(act_date, '%Y-%m-%dT%H:%M:%SZ')
-        act_list.append({'id': act_id,
-                         'date': {'year': dt_obj.year, 'month': dt_obj.month, 'day': dt_obj.day},
-                         'type': act_type,
-                         'time': act_time,
-                         'distance': act_distance,
-                         'gain': act_gain})
+    page = 1
+    while True:
+        print(page)
+        header = {'Authorization': 'Bearer ' + _token}
+        param = {'per_page': 100, 'page': page}
+        activities = requests.get(URL_STRAVA + '/activities', headers=header, params=param).json()
+        if not activities: break
+        for act in activities:
+            act_id = act['id']
+            act_distance = act['distance'] / 1000  # in km
+            act_time = act['elapsed_time'] / 3600  # in h with decimals after '.'  (not getting mins and secs for now)
+            act_type = act['type']
+            act_gain = act['total_elevation_gain']  # in m
+            act_date = act['start_date']
+            dt_obj = datetime.strptime(act_date, '%Y-%m-%dT%H:%M:%SZ')
+            act_list.append({'id': act_id,
+                             'date': {'year': dt_obj.year, 'month': dt_obj.month, 'day': dt_obj.day},
+                             'type': act_type,
+                             'time': act_time,
+                             'distance': act_distance,
+                             'gain': act_gain})
+        page += 1
     with open('activities.json', 'w') as json_file:
         dump(act_list, json_file)
 
