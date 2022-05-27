@@ -1,7 +1,7 @@
-# Strava-Viewer
-
+# Strava-Viewer  
 **...for viewing simple summaries of your Strava activities using  [Dash](https://dash.plotly.com) framework and [Strava API](https://developers.strava.com)**  
 *Working example could be seen at* [Heroku](https://strava-viewer.herokuapp.com/)
+
 ---
 
 *You have to do some things before you can read your activities:*
@@ -46,5 +46,5 @@ After adding new activities to Strava clicking **Load or refresh data**, this wi
 ---
 
 ### Heroku deployment  
-!!! All necessary files for Heroku deployment are included but don't forget to remove ***token.yaml*** from ***.gitignore***!!!  
+!!! All necessary files for Heroku deployment are included but don't forget to remove ***token.yaml*** from ***.gitignore***!!!
 You can also remove ***activities.json*** from ***.gitignore*** which will prevent see empty barchart at first start or after Heroku dyno restart.
