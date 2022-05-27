@@ -11,6 +11,8 @@ app = Dash(__name__,
            title='Strava Viewer',
            external_stylesheets=[DARKLY],
            prevent_initial_callbacks=True)
+# for heroku
+server = app.server
 
 app.layout = app_layout
 
