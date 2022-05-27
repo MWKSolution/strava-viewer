@@ -1,19 +1,33 @@
+"""Layouts definition for strava-viewer dash app"""
 from dash import html, dcc
 import dash_bootstrap_components as dbc
-import pandas as pd
 import plotly.express as px
+from activities import acts_file_present, get_acts_from_file, get_types, get_options
 
-df = pd.read_json('activities.json', orient='records')
+# Options list as a parameter for dash dbc.RadioItems options. Doesn't change so it is const.
+METRIC_OPTIONS = [
+        {'label': 'Distance [km]', 'value': 'distance'},
+        {'label': 'Time [h]', 'value': 'time'},
+        {'label': 'Elevation gain [m]', 'value': 'gain'}]
+# {'label': 'Quantity', 'value': 'quan'}] ... for further development
 
-barchart = px.bar(df,
-                  x='year',
-                  y='distance',
-                  color='type')
-
-nav_bar = dbc.NavbarSimple(
-    brand='Strava Viewer by MWK Solution',
-    color='primary',
-    dark=True)
+# Initiation some parameters for default view (when you load page for the first time
+if acts_file_present():  # check if activities file is present (if it is first run?)
+    df = get_acts_from_file()
+    barchart = px.bar(df,
+                      x='year',
+                      y='distance',
+                      color='type')
+    activity_types = get_types(df)
+    activity_options = get_options(activity_types)
+    metrics_options = METRIC_OPTIONS
+    metrics_value = 'distance'
+else:  # otherwise, prepare empty layout, it will change after clicking button: 'Load or refresh data'
+    barchart = {'data': [], 'layout': {}, 'frames': [], }
+    activity_options = []
+    activity_types = []
+    metrics_options = []
+    metrics_value = ''
 
 fig = dcc.Graph(figure=barchart,
                 config={'displaylogo'           : False,
@@ -22,25 +36,51 @@ fig = dcc.Graph(figure=barchart,
                         'showAxisDragHandles'   : True,
                         'modeBarButtonsToRemove': ['select2d', 'lasso2d', 'resetScale2d'],
                         'toImageButtonOptions'  : {'format': 'jpeg', 'scale': 2}},
-                style={'height': '80vh', 'width': '80vw'},
+                style={'height': '80vh', 'width': '66vw'},
                 id='bar-chart')
 
 load_button = dbc.Button(
-    children='Load data',
+    children='Load or refresh data',
     n_clicks=0,
     color='success',
     id='load-data',
     type='submit',
-    className='ms-4')
+    className='m-4')
+
+load_indicator = dbc.Spinner(html.Div(id='loading'),
+                             spinner_style={'width': '20rem', 'height': '20rem'},
+                             fullscreen=True,
+                             color='danger')
+
+metrics = html.Div([
+    dbc.Alert('Choose metrics', color='info', className='m-2'),
+    dbc.RadioItems(
+        options=metrics_options,
+        value=metrics_value,
+        id='metrics-input',
+        className='m-3')])
+
+activity = html.Div([
+    dbc.Alert('Choose activity', color='info', className='m-2'),
+    dbc.Checklist(
+        options=activity_options,
+        value=activity_types,
+        id='activity-input',
+        className='m-3')])
 
 main_layout = html.Div([
-    dbc.Row([dbc.Col([html.H2('Activities bar chart')], width=3)], justify='center'),
+    dbc.Row([dbc.Col([load_button, load_indicator], width=2)], justify='center'),
     dbc.Row([
-        dbc.Col([load_button],
-                width=1),
-        dbc.Col([fig]),
-        dbc.Col([],
-                width=1)])])
+        dbc.Col([metrics],
+                width=2),
+        dbc.Col([fig], width=8),
+        dbc.Col([activity],
+                width=2)], justify='center')])
+
+nav_bar = dbc.NavbarSimple(
+    brand='Strava Viewer by MWK Solution',
+    color='primary',
+    dark=True)
 
 app_layout = html.Div([nav_bar,
                        main_layout])
