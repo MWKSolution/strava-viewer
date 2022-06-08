@@ -1,6 +1,6 @@
 # Strava-Viewer  
 **...for viewing simple summaries of your Strava activities using  [Dash](https://dash.plotly.com) framework and [Strava API](https://developers.strava.com)**  
-*Working example could be seen at* [Heroku](https://strava-viewer.herokuapp.com/)
+*Working example could be seen at* **[Heroku](https://strava-viewer.herokuapp.com/)**
 
 ---
 
@@ -29,7 +29,7 @@ client_secret: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 refresh_token: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 access_token: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 grant_type: 'refresh_token'
-f: 'json'}
+f: 'json'
 ```
 Now you can get your activities from Strava.  
 Getting activities is based on code you can find here: [github.com...](https://github.com/franchyze923/Code_From_Tutorials/blob/master/Strava_Api/strava_api.py)  
@@ -39,7 +39,7 @@ Getting activities is based on code you can find here: [github.com...](https://g
 
 ### Strava-Viewer app
 
-Some simple summaries of activities data are presented using  [Dash](https://dash.plotly.com) framework.  
+Some simple summaries of activities data are presented using  **[Dash](https://dash.plotly.com)** framework.  
 When first used, app has empty dashboard. Click **Load or refresh data**, this will crate **activities.json** file.  
 After adding new activities to Strava clicking **Load or refresh data**, this will update **activities.json** file and barchart.
 
