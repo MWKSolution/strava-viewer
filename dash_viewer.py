@@ -2,10 +2,11 @@
 from dash import Dash
 from dash_bootstrap_components.themes import DARKLY
 from dash import Input, Output, State
-from layouts import app_layout, METRIC_OPTIONS
+from layouts import app_layout, METRIC_OPTIONS, get_chart
 from strava_data import request_access_token, get_activities, dump_acts_to_file
 from activities import get_acts_from_file, get_types, get_options
 import plotly.express as px
+import plotly.graph_objects as go
 
 app = Dash(__name__,
            title='Strava Viewer',
@@ -48,10 +49,7 @@ def show_bar_chart(metrics, activity):
     """Callback updates barchart when changes to metrics or activities are made."""
     df = get_acts_from_file()
     df = df[df['type'].isin(activity)]
-    barchart = px.bar(df,
-                      x='year',
-                      y=metrics,
-                      color='type')
+    barchart = get_chart(df, metrics, activity)
     return barchart
 
 
