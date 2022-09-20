@@ -2,6 +2,7 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 import plotly.express as px
+import plotly.graph_objects as go
 from activities import acts_file_present, get_acts_from_file, get_types, get_options
 
 # Options list as a parameter for dash dbc.RadioItems options. Doesn't change so it is const.
@@ -11,17 +12,44 @@ METRIC_OPTIONS = [
         {'label': 'Elevation gain [m]', 'value': 'gain'}]
 # {'label': 'Quantity', 'value': 'quan'}] ... for further development
 
+
+def get_chart(df, metrics, activity):
+    """Get plotly bar chart for given parameters
+
+    """
+    # start from empty Figure
+    barchart = go.Figure()
+    # stacked activities - one colour for one activity
+    for i in activity:
+        dfa = df[df['type'] == i]
+        barchart.add_trace(go.Bar(
+                          x=dfa['year'],
+                          y=dfa[metrics],
+                          name=i,
+                          showlegend=True))
+    barchart.update_layout(barmode='stack')
+    # add total sum for given metrics
+    dfs = df.groupby(['year'], as_index=False).sum()
+    barchart.add_trace(
+        go.Scatter(
+            x=dfs['year'],
+            y=dfs[metrics],
+            text=dfs[metrics],
+            mode='text',
+            textposition='top center',
+            texttemplate='%{text:.3s}',
+            showlegend=False))
+    return barchart
+
+
 # Initiation some parameters for default view (when you load page for the first time
 if acts_file_present():  # check if activities file is present (if it is first run?)
     df = get_acts_from_file()
-    barchart = px.bar(df,
-                      x='year',
-                      y='distance',
-                      color='type')
     activity_types = get_types(df)
     activity_options = get_options(activity_types)
     metrics_options = METRIC_OPTIONS
     metrics_value = 'distance'
+    barchart = get_chart(df, metrics_value, activity_types)
 else:  # otherwise, prepare empty layout, it will change after clicking button: 'Load or refresh data'
     barchart = {'data': [], 'layout': {}, 'frames': [], }
     activity_options = []
@@ -50,8 +78,7 @@ load_button = dbc.Button(
 load_indicator = dbc.Spinner(html.Div(id='loading'),
                              spinner_style={'width': '20rem', 'height': '20rem'},
                              fullscreen=True,
-                             color='danger',
-                             text_auto=True)
+                             color='danger')
 
 metrics = html.Div([
     dbc.Alert('Choose metrics', color='info', className='m-2'),
