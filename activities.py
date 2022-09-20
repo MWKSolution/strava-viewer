@@ -27,9 +27,15 @@ def get_options(_types):
     """Prepare options list as a parameter for dash dbc.Checklist options.Returns list of dictionaries."""
     _opts = []
     for _t in _types:
-        _opts.append({'label': _t.capitalize(), 'value': _t})
+        _ts = str(_t)
+        _opts.append({'label': _ts.capitalize(), 'value': _ts})
     return _opts
 
+def get_years(_df):
+    _ALL = ['All']
+    _years = _df['year'].unique()
+    _ALL.extend(_years)
+    return _ALL
 
 if __name__ == '__main__':
     # for testing
@@ -39,6 +45,7 @@ if __name__ == '__main__':
         types = get_types(df)
         print(types)
         print(get_options(types))
+        print(get_years(df))
     else:
         print(f'No "{ACT_FILE}" file!')
 
