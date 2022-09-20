@@ -50,7 +50,8 @@ load_button = dbc.Button(
 load_indicator = dbc.Spinner(html.Div(id='loading'),
                              spinner_style={'width': '20rem', 'height': '20rem'},
                              fullscreen=True,
-                             color='danger')
+                             color='danger',
+                             text_auto=True)
 
 metrics = html.Div([
     dbc.Alert('Choose metrics', color='info', className='m-2'),
