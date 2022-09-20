@@ -4,9 +4,7 @@ from dash_bootstrap_components.themes import DARKLY
 from dash import Input, Output, State
 from layouts import app_layout, METRIC_OPTIONS, get_chart
 from strava_data import request_access_token, get_activities, dump_acts_to_file
-from activities import get_acts_from_file, get_types, get_options
-import plotly.express as px
-import plotly.graph_objects as go
+from activities import get_acts_from_file, get_types, get_options, get_years
 
 app = Dash(__name__,
            title='Strava Viewer',
@@ -36,6 +34,7 @@ def load_data(n_clicks):
         activity_types = get_types(df)
         activity_options = get_options(activity_types)
         metrics_options = METRIC_OPTIONS
+        years_all = get_years(df)
         metrics_value = 'distance'
 
         return '', metrics_options, metrics_value, activity_options, activity_types
@@ -43,13 +42,16 @@ def load_data(n_clicks):
 
 @app.callback(Output('bar-chart', 'figure'),
               [Input('metrics-input', 'value'),
-               Input('activity-input', 'value')],
+               Input('activity-input', 'value'),
+               Input('years-input', 'value')],
               prevent_initial_call=True)
-def show_bar_chart(metrics, activity):
+def show_bar_chart(metrics, activity, year):
     """Callback updates barchart when changes to metrics or activities are made."""
     df = get_acts_from_file()
+    if year != 'All':
+        df = df[df['year'] == int(year)]
     df = df[df['type'].isin(activity)]
-    barchart = get_chart(df, metrics, activity)
+    barchart = get_chart(df, metrics, activity, year)
     return barchart
 
 
