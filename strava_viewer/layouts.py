@@ -57,6 +57,9 @@ class Layout:
             self.year = Year(types=[], options=[], value='')
 
     def __call__(self):
+        """Makes instance callable.
+        Returns layout for dash.
+        Layout depends on data."""
         return self.app_layout()
 
     def fig(self):
@@ -101,31 +104,36 @@ class Layout:
                 className='m-3')])
         return _activity
 
+    load_indicator_reload = dbc.Spinner(html.Div(id='loading'),
+                                        spinner_style={'width': '5rem', 'height': '5rem'},
+                                        fullscreen=False,
+                                        color='danger')
+
     load_button = dbc.Button(
-        children='Reload all data',
+        children=['Reload all data', load_indicator_reload],
         n_clicks=0,
         color='danger',
         id='load-data',
         type='submit',
         className='m-4')
 
+    load_indicator_refresh = dbc.Spinner(html.Div(id='refresh'),
+                                         spinner_style={'width': '5rem', 'height': '5rem'},
+                                         fullscreen=False,
+                                         color='success')
+
     refresh_button = dbc.Button(
-        children='Load or refresh data',
+        children=['Refresh data', load_indicator_refresh],
         n_clicks=0,
         color='success',
         id='refresh-data',
         type='submit',
         className='m-4')
 
-    load_indicator = dbc.Spinner(html.Div(id='loading'),
-                                 spinner_style={'width': '20rem', 'height': '20rem'},
-                                 fullscreen=True,
-                                 color='danger')
-
     def main_layout(self):
         _main = html.Div([
             dbc.Row([
-                dbc.Col([self.metricsl(), self.activityl(), self.refresh_button, self.load_button, self.load_indicator],
+                dbc.Col([self.metricsl(), self.activityl(), self.refresh_button, self.load_button],
                         width=2),
                 dbc.Col([self.fig()], width=8),
                 dbc.Col([self.interval()],
