@@ -13,6 +13,7 @@ Metric = namedtuple('Metric', ['types', 'options', 'value'])
 Activity = namedtuple('Activity', ['types', 'options', 'value'])
 Year = namedtuple('Year', ['types', 'options', 'value'])
 
+
 def get_options_for_types(_types):
     """Prepare options list as a parameter for dash dbc.Checklist options.Returns list of dictionaries."""
     _opts = []
@@ -20,6 +21,7 @@ def get_options_for_types(_types):
         _ts = str(_t)
         _opts.append({'label': _ts.capitalize(), 'value': _ts})
     return _opts
+
 
 def get_options(_df):
     # metrics
