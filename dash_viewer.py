@@ -1,9 +1,7 @@
-"""App starter and callbacks definitions"""
+"""App setup and starter"""
 from dash_extensions.enrich import MultiplexerTransform, DashProxy
 from dash_bootstrap_components.themes import DARKLY
-from strava_viewer import Layout
-from strava_viewer import StravaData
-from strava_viewer import get_callbacks
+from strava_viewer import Layout, StravaData, get_callbacks
 
 app = DashProxy(__name__,
                 title='Strava Viewer',
