@@ -1,8 +1,11 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 import pandas as pd
-from json import dump, load
+from json import dump, load, loads
 import operator as op
+from yaml import safe_load
+from redis import Redis
+# :todo: requirements.txt !
 
 
 class NotValidConnection(Exception):
@@ -24,7 +27,7 @@ class Connection(ABC):
         pass
 
 
-class Json(Connection):
+class JsonFile(Connection):
     ACT_FILE = Path(__file__).parent / 'local/activities.json'
 
     def save_data(self, acts, mode):
@@ -46,19 +49,31 @@ class Json(Connection):
         return self.ACT_FILE.exists()
 
 
-class Redis(Connection):
-    ACT_REDIS = '...'
+class RedisDB(Connection):
+    REDIS_YAML = Path(__file__).parent / 'secret/redis.yaml'
+
+    def __init__(self):
+        with open(self.REDIS_YAML) as yaml_file:
+            self.ACCESS = safe_load(yaml_file)
+        self.r = Redis(host=self.ACCESS['host'],
+                       port=self.ACCESS['port'],
+                       username=self.ACCESS['username'],
+                       password=self.ACCESS['password'])
 
     def get_activities(self):
-        pass
+        data = loads(self.r.get('acts'))
+        _df = pd.DataFrame.from_dict(data, orient='records')
+        return _df
 
     def save_data(self, acts, mode):
+        # :todo: napisac to !
         pass
 
     def is_data_present(self):
-        pass
+        return self.r.exists('acts')
 
 
 if __name__ == '__main__':
-    b = Redis()
-    a = Json()
+    b = RedisDB()
+    print(b.r.dbsize())
+    a = JsonFile()
