@@ -6,7 +6,7 @@ from yaml import safe_load
 from datetime import datetime
 from strava_viewer.activities_options import get_options
 from strava_viewer.layouts import get_chart
-from strava_viewer.connection import Json, Redis, NotValidConnection
+from strava_viewer.connection import JsonFile, RedisDB, NotValidConnection
 
 disable_warnings(exceptions.InsecureRequestWarning)
 
@@ -27,9 +27,9 @@ class StravaData:
             self.TOKEN_DATA = safe_load(yaml_file)
 
         if data == 'local':
-            self.conn = Json()
+            self.conn = JsonFile()
         elif data == 'redis':
-            self.conn = Redis()
+            self.conn = RedisDB()
         else:
             self.conn = None
             raise NotValidConnection
