@@ -10,7 +10,6 @@ Before you start your application...
     - set up your API app in [Strava](https://developers.strava.com/docs/getting-started/#account)
     - and then get **client_id** and **client_secret**
 2. Then use browser and following links to get **access** and **refresh** tokens:  
-   *(This steps will allow you to omit strava authentication every time you use your application.)*   
    Manually in browser *(put appropriate data when in CAPITALS)*:
    - https://www.strava.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=http://localhost&response_type=code&scope=activity:read_all  
    This will open Strava authorization page. Click authorize. This will in turn open page:
