@@ -13,7 +13,7 @@ app = DashProxy(__name__,
 server = app.server
 
 # data hook
-data = StravaData(data='local')
+data = StravaData(data='redis')
 
 # definition of app layout, instance is callable
 app.layout = Layout(data=data)()

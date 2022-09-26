@@ -127,10 +127,7 @@ class StravaData:
         """Get all activities from file or redis and return them as dataframe."""
         _df = self.conn.get_activities()
         ts = _df['timestamp'].max()
-        # wtf????
-        # pandas is changing int to timestamp if column name is timestamp ????????????????
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        self.LATEST_ACTIVITY = int(ts.value * 1e-9)
+        self.LATEST_ACTIVITY = ts
         return _df
 
     def acts_data_present(self):

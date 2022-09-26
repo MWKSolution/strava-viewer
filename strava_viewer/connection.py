@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 import pandas as pd
-from json import dump, load, loads
+from json import dump, load, loads, dumps
 import operator as op
 from yaml import safe_load
 from redis import Redis
@@ -42,7 +42,7 @@ class JsonFile(Connection):
             dump(_acts, json_file)
 
     def get_activities(self):
-        _df = pd.read_json(self.ACT_FILE, orient='records')
+        _df = pd.read_json(self.ACT_FILE, orient='columns', convert_dates=False)
         return _df
 
     def is_data_present(self):
@@ -62,12 +62,18 @@ class RedisDB(Connection):
 
     def get_activities(self):
         data = loads(self.r.get('acts'))
-        _df = pd.DataFrame.from_dict(data, orient='records')
+        _df = pd.DataFrame.from_dict(data, orient='columns')
         return _df
 
     def save_data(self, acts, mode):
-        # :todo: napisac to !
-        pass
+        _acts = []
+        if mode == 'append':
+            if self.is_data_present():
+                r_acts = self.r.get('acts')
+                _acts = loads(r_acts)
+        _acts.extend(acts)
+        _acts.sort(key=op.itemgetter('timestamp'), reverse=True)  # descending order by timestamp
+        self.r.set('acts', dumps(_acts))
 
     def is_data_present(self):
         return self.r.exists('acts')
@@ -75,5 +81,5 @@ class RedisDB(Connection):
 
 if __name__ == '__main__':
     b = RedisDB()
-    print(b.r.dbsize())
+    print(b.r.dbsize(), b.r.keys())
     a = JsonFile()
