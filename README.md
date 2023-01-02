@@ -51,5 +51,7 @@ After adding new activities to Strava clicking **Refresh data**, this will updat
 
 ---
 
-### Heroku deployment  
-!!! All necessary files for Heroku deployment are included but don't forget to remove ***token.yaml*** and ***redis.yaml*** from ***.gitignore***!!!
+### Deployment
+Since Heroku is no longer offering free dynos deployment was moved to Render.  
+But files necessary for Heroku deployment haven't been removed (*Procfile, runtime.txt*).  
+!!! All necessary files for deployment are included but don't forget to remove ***token.yaml*** and ***redis.yaml*** from ***.gitignore***!!!
