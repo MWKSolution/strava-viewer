@@ -1,6 +1,6 @@
 # Strava-Viewer  
 **...for viewing simple summaries of your Strava activities using  [Dash](https://dash.plotly.com) framework and [Strava API](https://developers.strava.com)**  
-*Working example could be seen at* **[Heroku](https://strava-viewer-mwk.herokuapp.com/)**
+*Working example could be seen at* **[Render](https://strava-viewr.onrender.com/)**
 
 ---
 
